@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+<!-- 
+1. component pass data to parent: $emit
+2. parent pass data to component: props[]
+3. syntactic sugar: v-model=  to replace  @input= & function
+4. component data can be initialized to a property in props[]
+-->
+    <div id="app">
+        <p>{{ total }}</p>
+        <my-component 
+            
+            message="the content from parent" 
+            :width="100"
+            @increase="handleGetTotal"
+            @reduce="handleGetTotal"
+            @click.native="handleclick"
+            v-model="total">
+        </my-component>
+        <hr>
+            
+        <ur-component></ur-component>
+        <table>
+            <tbody is="his-component"></tbody>
+        </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+
+        Vue.component('my-component', {
+            template: '<div><p>One component registered using Vue.component.</p> \
+                        <button @click.stop="handleIncrease" :style="style"> +1 </button> \
+                        <button @click="handleReduce" :style="style"> -1 </button> \
+                        <button @click="handleClick">++1 </button> \
+                        <input :value="value" @input="updateValue"> \
+                        <p> {{msg }}</p></div>',
+            props: ['message', 'width', 'value'], //type, default, required, validator
+            data: function(){
+                return {
+                    counter: 0,
+                    msg: this.message
+                }
+            },
+            computed: {
+                style: function(){
+                    return {
+                        width: this.width + 'px'
+                    }
+                }
+            },
+            methods:{
+                handleReduce: function(){
+                    this.counter--;
+                    this.$emit('increase', this.counter);
+                },
+                handleIncrease: function(){
+                    this.counter++;
+                    this.$emit('reduce', this.counter);
+                },
+                handleClick: function(){
+                    this.counter++;
+                    this.$emit('input', this.counter);
+                },
+                updateValue: function(){
+                    this.$emit('input', event.target.value);
+                },
+                
+            },
+            
+        });
+
+        var yours = {
+            template: '<div>Another component registered in parent\'s components.</div>'
+        }
+        var his = {
+            template: '<div>His component was refered by is=\' his-component.</div>'
+        }
+
+        var app = new Vue({
+            el: '#app',
+            components: {
+                'ur-component': yours,
+                'his-component': his
+            },
+            data:{
+                total: 0,
+                
+            },
+            methods:{
+                handleGetTotal: function(total){
+                    this.total = total;
+                },
+                handleclick: function(){
+                    //alert('You clicked public area.');
+                }
+            },
+            
+
+        });
+
+    </script>
+
+</body>
+
+</html>
