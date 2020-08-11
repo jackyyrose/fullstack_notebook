@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+    </style>
+</head>
+
+<body>
+<!-- 
+Slot
+-->
+    <div id="app">
+        
+        <navigation-link url="/profile">
+            <span class="fa fa-user"></span>
+            Your Profile
+        </navigation-link>
+
+        <base-layout>
+            <template v-slot:header>
+                <h1>Page Tile</h1>
+            </template>
+            <p>A paragraph</p>
+            <p>Another page</p>
+            <template v-slot:footer>
+                <p>Some contact info</p>
+            </template>
+            <template v-slot:side="slotProps">
+                {{ slotProps.user.firstName}}
+            </template>
+        </base-layout>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+
+        Vue.component('base-layout', {
+            template:
+            '<div class="container"> \
+                <header> \
+                    <slot name="header"></slot> \
+                </header> \
+                <main> \
+                    <slot></slot> \
+                </main> \
+                <footer> \
+                    <slot name="footer">default content if not given</slot> \
+                </footer> \
+                <span><slot name="side" v-bind:user="user">{{user.lastName}}</slot></span> \
+            </div>',
+            data: function(){
+                return {user: 
+                            {firstName:"First Name",
+                            lastName:"Last Name"}
+                    }
+            }
+        });
+
+        Vue.component('navigation-link', {
+            
+            template: '<a \
+                        :href="url" \
+                        class="nav-link"> \
+                        <slot></slot>\
+                        </a>',
+            props: ['url']
+            
+        });
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: '',
+                
+                            
+            },
+            
+        });
+    </script>
+
+        
+
+</body>
+
+</html>

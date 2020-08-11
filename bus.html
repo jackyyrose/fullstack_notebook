@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+<!-- 
+use another empty Vue as communication msg center
+1- in component: bus.$emit('event-name', msg)
+2- in another component: bus.$on('event-name', function(msg){})
+-->
+    <div id="app">
+        {{ message }}
+        <component-a></component-a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var bus = new Vue();
+
+        Vue.component('component-a', {
+            template: '<button @click="handleEvent">Pass Event</button>',
+            methods: {
+                handleEvent: function(){
+                    bus.$emit('on-message', 'Content from Component-a');
+                }
+            }
+        });
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: ''
+            },
+            mounted: function(){
+                var _this = this;
+                bus.$on('on-message', function(msg){
+                    _this.message = msg;
+                });
+                
+            }
+        });
+    </script>
+
+        
+
+</body>
+
+</html>
